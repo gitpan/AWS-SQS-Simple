@@ -28,4 +28,4 @@ requires:
   URI::Escape: 0
 resources:
   repository: git://github.com/sankita11/AWS-SQS-Simple.git
-version: 0.01
+version: 0.02

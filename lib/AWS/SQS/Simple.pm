@@ -27,43 +27,81 @@ AWS::SQS::Simple - This module is used to access amazon simple queue services.
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =cut
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 
 =head1 SYNOPSIS
 
 This module is used to access amazon simple queue services.
 
-#sqs.us-east-1.amazonaws.com
 
-Example :
+use AWS::SQS::Simple ;
 
-    use AWS::SQS::Simple ;
+my $ob = AWS::SQS::Simple->new(
+             ACCESS_KEY        => '..'  , 
+             SECRET_ACCESS_KEY => '..'  , 
 
-    my $ob = AWS::SQS::Simple->new(
-                ACCESS_KEY        => '..'  , 
-                SECRET_ACCESS_KEY => '..'  , 
+             AWS_ACCOUNT_ID    => '..'  , 
 
-                AWS_ACCOUNT_ID    => '..'  , 
+             END_POINT         => '..'  , 
 
-                END_POINT         => '..'  , 
-
-              );
-
-	$ob->create_queue( \%params_hash    ) ;
-	$ob->send_message( \%params_hash    ) ;
-	$ob->receive_message( \%params_hash ) ;
+         );
 
 
-=head1 FUNCTIONS
+
+my %params_hash = (
+
+      QUEUE_NAME              => QUEUE Name        ,
+
+      'AttributeName.1.Name'  => Attribute Name    , 
+      'AttributeName.1.Value' => Attribute Value   , [ Required if there is a corresponding Name Attribute.n.name parameter ]
+
+      'AttributeName.2.Name'  => Attribute Name    , 
+      'AttributeName.2.Value' => Attribute Value   , [ Required if there is a corresponding Name Attribute.n.name parameter ]
+
+    .....
+
+     );
+
+$ob->create_queue( \%params_hash    ) ;
+
+my %params_hash = (
+
+      QUEUE_NAME              => QUEUE Name        ,
+
+      'MessageBody'           => Message to send   , 
+      'DelaySeconds'          => The number of seconds to delay a specific message , [ OPTIONAL ]
+
+     );
+
+$ob->send_message( \%params_hash    ) ;
+
+
+my %params_hash = (
+
+      QUEUE_NAME            => QUEUE Name        ,
+
+    'AttributeName.n'       => The attribute you want to get. Valid values: All | SenderId | SentTimestamp | ApproximateReceiveCount | ApproximateFirstReceiveTimestamp   ,  [ OPTIONAL ]
+      'MaxNumberOfMessages' => Maximum number of messages to return. Default - 1 , [ OPTIONAL ]
+      'VisibilityTimeout'   => The duration in seconds that the received messages are hidden from subsequent retrieve requests after being retrieved by a ReceiveMessage request. Default - The visibility timeout for the queue , [ OPTIONAL ]
+      'WaitTimeSeconds'     => Long poll support (integer from 1 to 20 , [ OPTIONAL ]
+
+     );
+
+$ob->receive_message->( \%params_hash )
+
+
+=head1 CONSTRUCTOR 
 
 =head2 new
 
-  Usage:                                                                                      
+Constructs a new AWS::SQS::Simple object
+
+Following are the parametes taken by the constructor
 
     my $ob = AWS::SQS::Simple->new(
                 ACCESS_KEY        => '..'  , 
@@ -129,6 +167,12 @@ Usage:
 
 }
 
+
+=head1 FUNCTIONS
+
+No functions are exported by default.
+
+Following functions are all available through the AWS::SQS::Simple Object.
 
 =head2 create_queue
 	
@@ -362,6 +406,10 @@ sub get_queue_attributes {
     return $response                                  ;
 }
 
+
+=head1 INTERNAL SUBROUTINES/METHODS
+
+Following methods are used only by the modules.
 
 =head2 _get_url
 	
